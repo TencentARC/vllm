@@ -145,6 +145,7 @@ class GPUModelRunner(LoRAModelRunnerMixin):
         # Multi-modal data support
         self.mm_registry = MULTIMODAL_REGISTRY
         self.uses_mrope = model_config.uses_mrope
+        self.mrope_dim = model_config.mrope_dim
 
         encoder_compute_budget, encoder_cache_size = compute_encoder_budget(
             model_config=model_config,
@@ -230,11 +231,11 @@ class GPUModelRunner(LoRAModelRunnerMixin):
             # identical position IDs, making M-RoPE functionally equivalent to
             # 1D-RoPE.
             # See page 5 of https://arxiv.org/abs/2409.12191
-            self.mrope_positions = torch.zeros((3, self.max_num_tokens + 1),
+            self.mrope_positions = torch.zeros((self.mrope_dim, self.max_num_tokens + 1),
                                                dtype=torch.int64,
                                                device=self.device)
             self.mrope_positions_cpu = torch.zeros(
-                (3, self.max_num_tokens + 1),
+                (self.mrope_dim, self.max_num_tokens + 1),
                 dtype=torch.int64,
                 device="cpu",
                 pin_memory=self.pin_memory)

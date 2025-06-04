@@ -904,7 +904,7 @@ class ModelInputForGPUBuilder(ModelRunnerInputBuilderBase[ModelInputForGPU]):
                                                 if token_types else None
 
         if mrope_input_positions is not None:
-            for idx in range(3):
+            for idx in range(self.model_config.mrope_dim):
                 mrope_input_positions[idx].extend(
                     itertools.repeat(0, cuda_graph_pad_size))
             input_positions_tensor = async_tensor_h2d(mrope_input_positions,
@@ -1468,7 +1468,8 @@ class GPUModelRunnerBase(ModelRunnerBase[TModelInputForGPU]):
                                       device=self.device)
         if self.model_config.uses_mrope:
             input_positions = torch.tile(input_positions,
-                                         (3, 1)).cuda(device=self.device)
+                                         (self.model_config.mrope_dim, 1)).cuda(device=self.device)
+
         # Prepare dummy previous_hidden_states only if needed by the model.
         # This is used by draft models such as EAGLE.
         previous_hidden_states = None

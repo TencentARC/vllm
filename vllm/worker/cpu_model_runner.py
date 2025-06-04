@@ -272,7 +272,7 @@ class ModelInputForCPUBuilder(ModelRunnerInputBuilderBase[ModelInputForCPU]):
                 context_len,
                 seq_len,
             )
-            for idx in range(3):
+            for idx in range(len(next_pos)):
                 data.input_mrope_positions[idx].extend(  # type: ignore
                     next_pos[idx])
         else:
@@ -400,7 +400,7 @@ class ModelInputForCPUBuilder(ModelRunnerInputBuilderBase[ModelInputForCPU]):
                 )
             seq_data.mrope_position_delta = mrope_position_delta
 
-            for i in range(3):
+            for i in range(len(mrope_positions)):
                 self.input_data.input_mrope_positions[  # type: ignore
                     i].extend(mrope_positions[i])
 

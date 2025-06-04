@@ -233,6 +233,13 @@ def uses_mrope(config: PretrainedConfig) -> bool:
     return _uses_mrope(config) or thinker_uses_mrope(config)
 
 
+def get_mrope_dim(config: PretrainedConfig) -> int:
+    rope_scaling = getattr(config, "rope_scaling", None)
+    if rope_scaling is None:
+        return 0
+    return len(rope_scaling["mrope_section"])
+
+
 def thinker_uses_mrope(config: PretrainedConfig) -> bool:
     """Detect if the model contains a thinker config and it uses M-ROPE."""
     thinker_config = getattr(config, "thinker_config", None)
